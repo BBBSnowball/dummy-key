@@ -17,9 +17,9 @@ For a machine
 
 Copy `id_rsa` and `id_rsa.pub` to `~/.ssh`. Do *not* copy `config`. That's it.
 
-If you already have another `id_rsa`, use a different name and create an appropriate SSH config file:
+If you already have another `id_rsa`, use a different name and create an appropriate SSH config file. You can do that like this:
 
-```
+```sh
 cp id_rsa     ~/.ssh/id_rsa_github
 cp id_rsa.pub ~/.ssh/id_rsa_github.pub
 cat >>~/.ssh/config <<EOF
@@ -33,3 +33,16 @@ For a repository
 ----------------
 
 Set `GIT_SSH` when cloning repositories from Github, e.g. `GIT_SSH="path/to/dummy-key/dummy-ssh" git fetch --init your-github-submodule`.
+
+You should deploy a copy of dummy-key in your repository, so your scripts know where to find it. Of course, this submodule cannot use an SSH URL.
+
+Example:
+```sh
+mkdir deps
+git submodule add https://github.com/BBBSnowball/dummy-key deps/dummy-key
+git submodule add git@github.com:some-awesome-software.git deps/some-awesome-software
+cat >fetch.sh <<EOF
+git submodule fetch --init deps/dummy-key
+GIT_SSH="deps/dummy-key/dummy-ssh" git fetch --init deps/some-awesome-software
+EOF
+```
