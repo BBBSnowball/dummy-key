@@ -1,0 +1,5 @@
+#!/bin/sh
+
+dir="$(cd "$(dirname "$0")" ; pwd)"
+
+ssh -F "$dir/config" -i "$dir/id_rsa" "$@"
